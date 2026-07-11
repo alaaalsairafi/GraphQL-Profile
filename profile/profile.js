@@ -4,19 +4,19 @@ import { navigate }          from '../utils/router.js';
 import { fetchUser, fetchXP, fetchAuditRatio } from '../graphql/queries.js';
 import { renderXPOverTime }   from '../graphs/xpOverTime.js';
 import { renderXPPerProject } from '../graphs/xpPerProject.js';
- 
+
 export async function render(container) {
   loadStyles('../style/profile.css');
- 
+
   // ── Shell ──
   container.innerHTML = `
     <nav class="nav">
       <span class="nav-brand">&lt;/&gt; dev.profile</span>
       <button id="btn-logout" class="btn-logout">Log out</button>
     </nav>
- 
+
     <main class="profile-main">
- 
+
       <section class="info-grid">
         <div class="info-card" id="card-user">
           <span class="card-label">User</span>
@@ -39,7 +39,7 @@ export async function render(container) {
           </div>
         </div>
       </section>
- 
+
       <section class="graphs-section">
         <div class="graph-card">
           <h2 class="graph-title">XP Over Time</h2>
@@ -50,16 +50,16 @@ export async function render(container) {
           <div class="graph-container" id="graph-xp-project"></div>
         </div>
       </section>
- 
+
     </main>
   `;
- 
+
   // ── Logout ──
   document.getElementById('btn-logout').addEventListener('click', () => {
     Auth.clearToken();
     navigate('login');
   });
- 
+
   // ── Fetch & populate ──
   try {
     const [user, xpTx, audit] = await Promise.all([
@@ -67,45 +67,45 @@ export async function render(container) {
       fetchXP(),
       fetchAuditRatio(),
     ]);
- 
+
     // User card
     document.getElementById('val-login').textContent = user.login;
     document.getElementById('val-id').textContent    = `id: ${user.id}`;
- 
+
     // XP card
     const totalXP = xpTx.reduce((sum, t) => sum + t.amount, 0);
     document.getElementById('val-xp').textContent =
       totalXP >= 1000 ? `${(totalXP / 1000).toFixed(1)} kB` : `${totalXP} B`;
- 
+
     // Audit card
     const ratio = audit.auditRatio?.toFixed(1) ?? '—';
     document.getElementById('val-ratio').textContent = ratio;
- 
+
     const up   = fmt(audit.totalUp);
     const down = fmt(audit.totalDown);
     document.getElementById('val-audit-detail').textContent = `↑ ${up}  ↓ ${down}`;
- 
+
     const pct = Math.min((audit.auditRatio / 2) * 100, 100);
     document.getElementById('audit-bar').style.width = `${pct}%`;
     document.getElementById('audit-bar').style.background =
       audit.auditRatio >= 1 ? 'var(--success)' : 'var(--error)';
- 
+
     // Graphs
     renderXPOverTime(document.getElementById('graph-xp-time'), xpTx);
     renderXPPerProject(document.getElementById('graph-xp-project'), xpTx);
- 
+
   } catch (err) {
     console.error('Profile load error:', err);
   }
 }
- 
+
 function fmt(bytes) {
   if (!bytes) return '0 B';
   if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(2)} MB`;
   if (bytes >= 1_000)     return `${(bytes / 1_000).toFixed(1)} kB`;
   return `${bytes} B`;
 }
- 
+
 function loadStyles(href) {
   if (document.querySelector(`link[href="${href}"]`)) return;
   const link = document.createElement('link');

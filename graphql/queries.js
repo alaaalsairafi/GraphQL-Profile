@@ -1,8 +1,8 @@
 // graphql/queries.js
 // All named queries used in the profile page
- 
+
 import { gqlQuery } from './client.js';
- 
+
 // ── 1. Basic user info (normal query) ──
 export async function fetchUser() {
   const data = await gqlQuery(`{
@@ -13,7 +13,7 @@ export async function fetchUser() {
   }`);
   return data.user[0];
 }
- 
+
 // ── 2. Total XP + XP per project (nested query) ──
 export async function fetchXP() {
   const data = await gqlQuery(`{
@@ -33,7 +33,7 @@ export async function fetchXP() {
   }`);
   return data.transaction;
 }
- 
+
 // ── 3. Audit ratio (argument query) ──
 export async function fetchAuditRatio() {
   const data = await gqlQuery(`{
@@ -45,7 +45,7 @@ export async function fetchAuditRatio() {
   }`);
   return data.user[0];
 }
- 
+
 // ── 4. Pass / Fail results (nested query) ──
 export async function fetchResults() {
   const data = await gqlQuery(`{
