@@ -6,7 +6,7 @@ import { renderXPOverTime }   from '../graphs/xpOverTime.js';
 import { renderXPPerProject } from '../graphs/xpPerProject.js';
 
 export async function render(container) {
-  loadStyles('../style/profile.css');
+  loadStyles('style/profile.css');
 
   // ── Shell ──
   container.innerHTML = `

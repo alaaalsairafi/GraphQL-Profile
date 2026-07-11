@@ -58,7 +58,7 @@ export function render(container) {
     </div>
   `;
 
-  loadStyles('./style/login.css');
+  loadStyles('style/login.css');
   attachEvents();
 }
 
