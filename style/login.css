@@ -109,7 +109,7 @@
   font-size: 15px;
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
-  caret-color: var(--accent); /* purple cursor */
+  caret-color: transparent;
 }
 
 .form-group input::placeholder {
@@ -130,23 +130,42 @@
   padding-right: 44px;
 }
 
-.toggle-pw {
+
+/* Password visibility button */
+#toggle-pw {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
   color: var(--text-3);
   padding: 2px;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: color 0.15s;
+  outline: none;
 }
 
-.toggle-pw:hover { color: var(--text-2); }
-.toggle-pw svg { width: 17px; height: 17px; }
+#toggle-pw:hover {
+  color: var(--text-2);
+}
+
+#toggle-pw:focus {
+  outline: none;
+}
+
+#toggle-pw svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
+#toggle-pw.hidden {
+  display: none;
+}
 
 /* Error */
 .form-error {

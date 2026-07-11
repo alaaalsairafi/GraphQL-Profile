@@ -8,26 +8,24 @@ export function render(container) {
     <div class="login-bg">
       <div class="grid-lines"></div>
     </div>
-
     <div class="login-container">
       <div class="login-brand">
-        <span class="brand-symbol">&lt;/&gt;</span>
         <h1 class="brand-name">GraphQL<span class="accent"></span></h1>
       </div>
-
       <div class="login-form">
         <div class="form-group">
-          <label for="identifier">Username or Email</label>
+          <label for="identifier">GraphQL Login</label>
           <input
             type="text"
             id="identifier"
-            placeholder="you@school.com"
+            placeholder="Username or Email"
             autocomplete="username"
           />
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
+
           <div class="password-wrapper">
             <input
               type="password"
@@ -35,7 +33,12 @@ export function render(container) {
               placeholder="••••••••"
               autocomplete="current-password"
             />
-            <button type="button" id="toggle-pw" aria-label="Show password">
+            <button 
+              type="button" 
+              id="toggle-pw"
+              aria-label="Show password"
+              class="hidden"
+            >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
@@ -57,7 +60,6 @@ export function render(container) {
       </div>
     </div>
   `;
-
   loadStyles('style/login.css');
   attachEvents();
 }
@@ -71,26 +73,66 @@ function attachEvents() {
   const btnLoader    = btnLogin.querySelector('.btn-loader');
   const togglePwBtn  = document.getElementById('toggle-pw');
 
-  togglePwBtn.addEventListener('click', () => {
-    const isHidden = passwordEl.type === 'password';
-    passwordEl.type = isHidden ? 'text' : 'password';
-    togglePwBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+  /*
+    Password eye visibility control
+  */
+  passwordEl.addEventListener('input', () => {
+    if (passwordEl.value.length > 0) {
+      togglePwBtn.classList.remove('hidden');
+    } else {
+      togglePwBtn.classList.add('hidden');
+      // Reset password state
+      passwordEl.type = 'password';
+      togglePwBtn.setAttribute(
+        'aria-label',
+        'Show password'
+      );
+    }
   });
 
+
+  /*
+    Password show/hide toggle
+  */
+  togglePwBtn.addEventListener('click', () => {
+    const isHidden = passwordEl.type === 'password';
+    passwordEl.type = isHidden
+      ? 'text'
+      : 'password';
+
+    togglePwBtn.setAttribute(
+      'aria-label',
+      isHidden
+        ? 'Hide password'
+        : 'Show password'
+    );
+  });
+
+
+  /*
+    Enter key login
+  */
   [identifierEl, passwordEl].forEach(el => {
     el.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') btnLogin.click();
+      if (e.key === 'Enter') {
+        btnLogin.click();
+      }
     });
   });
 
+
+  /*
+    Login button
+  */
+
   btnLogin.addEventListener('click', async () => {
     errorEl.textContent = '';
-
     const identifier = identifierEl.value.trim();
     const password   = passwordEl.value;
 
     if (!identifier || !password) {
-      errorEl.textContent = 'Please fill in both fields.';
+      errorEl.textContent =
+        'Please fill in both fields.';
       return;
     }
 
@@ -102,8 +144,10 @@ function attachEvents() {
       const token = await signIn(identifier, password);
       Auth.setToken(token);
       navigate('profile');
+
     } catch (err) {
       errorEl.textContent = err.message;
+
     } finally {
       btnLogin.disabled = false;
       btnText.hidden    = false;
@@ -111,6 +155,7 @@ function attachEvents() {
     }
   });
 }
+
 
 async function signIn(identifier, password) {
   const credentials = btoa(`${identifier}:${password}`);
@@ -121,23 +166,43 @@ async function signIn(identifier, password) {
       'Authorization': `Basic ${credentials}`,
       'Content-Type': 'application/json',
     },
+
   });
 
   if (res.status === 401 || res.status === 403)
-    throw new Error('Invalid credentials. Check your username/email and password.');
-  if (!res.ok)
-    throw new Error(`Server error (${res.status}). Please try again.`);
+    throw new Error(
+      'Invalid credentials. Check your username/email and password.'
+    );
 
-  const data  = await res.json();
-  const token = typeof data === 'string' ? data : (data?.token ?? data?.jwt);
-  if (!token) throw new Error('Unexpected server response. Please try again.');
+  if (!res.ok)
+    throw new Error(
+      `Server error (${res.status}). Please try again.`
+    );
+
+  const data = await res.json();
+  const token =
+    typeof data === 'string'
+      ? data
+      : (data?.token ?? data?.jwt);
+
+  if (!token)
+    throw new Error(
+      'Unexpected server response. Please try again.'
+    );
+
   return token;
 }
 
 function loadStyles(href) {
-  if (document.querySelector(`link[href="${href}"]`)) return;
+  if (document.querySelector(`link[href="${href}"]`))
+    return;
+
+
   const link = document.createElement('link');
-  link.rel   = 'stylesheet';
-  link.href  = href;
+
+  link.rel = 'stylesheet';
+
+  link.href = href;
+
   document.head.appendChild(link);
 }
