@@ -1,7 +1,7 @@
 // profile/profile.js
 import { Auth }              from '../auth/auth.js';
 import { navigate }          from '../utils/router.js';
-import { fetchUser, fetchXP, fetchAuditRatio } from '../graphql/queries.js';
+import { fetchUser, fetchXP, fetchXPTotal, fetchAuditRatio } from '../graphql/queries.js';
 import { renderXPOverTime }   from '../graphs/xpOverTime.js';
 import { renderXPPerProject } from '../graphs/xpPerProject.js';
 
@@ -62,9 +62,10 @@ export async function render(container) {
 
   // ── Fetch & populate ──
   try {
-    const [user, xpTx, audit] = await Promise.all([
+    const [user, xpTx, totalXP, audit] = await Promise.all([
       fetchUser(),
       fetchXP(),
+      fetchXPTotal(),
       fetchAuditRatio(),
     ]);
 
@@ -73,7 +74,6 @@ export async function render(container) {
     document.getElementById('val-id').textContent    = `id: ${user.id}`;
 
     // XP card
-    const totalXP = xpTx.reduce((sum, t) => sum + t.amount, 0);
     document.getElementById('val-xp').textContent =
       totalXP >= 1000 ? `${(totalXP / 1000).toFixed(1)} kB` : `${totalXP} B`;
 
