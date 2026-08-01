@@ -1,5 +1,4 @@
-// graphql/queries.js
-// All named queries used in the profile page
+//queries used in the profile page
 
 import { gqlQuery } from './client.js';
 
@@ -14,7 +13,26 @@ export async function fetchUser() {
   return data.user[0];
 }
 
-// ── 2. Total XP + XP per project (nested query) ──
+// ── 2a. Total XP — aggregate sum, not subject to row-return limits ──
+export async function fetchXPTotal() {
+  const data = await gqlQuery(`{
+    transaction_aggregate(
+      where: {
+        type: { _eq: "xp" }
+        path: { _nlike: "%piscine%" }
+      }
+    ) {
+      aggregate {
+        sum {
+          amount
+        }
+      }
+    }
+  }`);
+  return data.transaction_aggregate.aggregate.sum.amount ?? 0;
+}
+
+// ── 2b. XP per project / over time (nested query, for the graphs) ──
 export async function fetchXP() {
   const data = await gqlQuery(`{
     transaction(
@@ -23,6 +41,7 @@ export async function fetchXP() {
         path: { _nlike: "%piscine%" }
       }
       order_by: { createdAt: asc }
+      limit: 1000
     ) {
       amount
       createdAt
