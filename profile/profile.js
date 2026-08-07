@@ -11,7 +11,7 @@ export async function render(container) {
   // ── Shell ──
   container.innerHTML = `
     <nav class="nav">
-      <span class="nav-brand">&lt;/&gt; dev.profile</span>
+      <span class="nav-brand">GraphQL</span>
       <button id="btn-logout" class="btn-logout">Log out</button>
     </nav>
 
