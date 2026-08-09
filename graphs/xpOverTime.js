@@ -83,17 +83,35 @@ export function renderXPOverTime(container, transactions) {
   });
   svg.appendChild(linePath);
 
-  // X axis date labels (show ~4 evenly spaced)
-  const labelCount = Math.min(4, points.length);
-  for (let i = 0; i < labelCount; i++) {
-    const idx = Math.round((i / (labelCount - 1)) * (points.length - 1));
-    const p   = points[idx];
-    const x   = scaleX(p.date);
+  // X axis date labels — spaced evenly across the TIME range (not by point index),
+  // so labels don't bunch up when transactions cluster early on.
+  // Also skips any label that would land too close (in pixels) to the previous one.
+  const desiredLabels = Math.min(4, points.length);
+  const minPixelGap = 45;
+  const placedX = [];
+
+  for (let i = 0; i < desiredLabels; i++) {
+    const targetTime = desiredLabels === 1
+      ? minDate
+      : minDate + (i / (desiredLabels - 1)) * (maxDate - minDate);
+
+    // find the actual data point closest to this target time
+    let closest = points[0];
+    let minDiff = Infinity;
+    for (const p of points) {
+      const diff = Math.abs(p.date.getTime() - targetTime);
+      if (diff < minDiff) { minDiff = diff; closest = p; }
+    }
+
+    const x = scaleX(closest.date);
+    if (placedX.some(px => Math.abs(px - x) < minPixelGap)) continue;
+    placedX.push(x);
+
     const label = el('text', {
       x, y: PAD.top + innerH + 20,
       'text-anchor': 'middle', class: 'graph-label',
     });
-    label.textContent = p.date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+    label.textContent = closest.date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
     svg.appendChild(label);
   }
 
