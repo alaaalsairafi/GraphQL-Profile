@@ -14,11 +14,17 @@ export async function fetchUser() {
 }
 
 // ── 2a. Total XP — aggregate sum, not subject to row-return limits ──
+// Excludes entry-piscine exercise XP, but keeps XP from any "piscine" object type
+// (e.g. the piscine-js completion bonus) that lives nested under bh-module.
 export async function fetchXPTotal() {
   const data = await gqlQuery(`{
     transaction_aggregate(
       where: {
         type: { _eq: "xp" }
+        _or: [
+          { path: { _nlike: "%piscine%" } }
+          { object: { type: { _eq: "piscine" } } }
+        ]
       }
     ) {
       aggregate {
@@ -37,6 +43,10 @@ export async function fetchXP() {
     transaction(
       where: {
         type: { _eq: "xp" }
+        _or: [
+          { path: { _nlike: "%piscine%" } }
+          { object: { type: { _eq: "piscine" } } }
+        ]
       }
       order_by: { createdAt: asc }
       limit: 1000
