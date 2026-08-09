@@ -42,6 +42,7 @@ export function render(container) {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
+                <line class="eye-slash" x1="1" y1="1" x2="23" y2="23"/>
               </svg>
             </button>
           </div>
@@ -83,31 +84,20 @@ function attachEvents() {
       togglePwBtn.classList.add('hidden');
       // Reset password state
       passwordEl.type = 'password';
-      togglePwBtn.setAttribute(
-        'aria-label',
-        'Show password'
-      );
+      togglePwBtn.classList.remove('pw-visible');
+      togglePwBtn.setAttribute('aria-label', 'Show password');
     }
   });
-
 
   /*
     Password show/hide toggle
   */
   togglePwBtn.addEventListener('click', () => {
     const isHidden = passwordEl.type === 'password';
-    passwordEl.type = isHidden
-      ? 'text'
-      : 'password';
-
-    togglePwBtn.setAttribute(
-      'aria-label',
-      isHidden
-        ? 'Hide password'
-        : 'Show password'
-    );
+    passwordEl.type = isHidden ? 'text' : 'password';
+    togglePwBtn.classList.toggle('pw-visible', isHidden);
+    togglePwBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
   });
-
 
   /*
     Enter key login
@@ -120,19 +110,16 @@ function attachEvents() {
     });
   });
 
-
   /*
     Login button
   */
-
   btnLogin.addEventListener('click', async () => {
     errorEl.textContent = '';
     const identifier = identifierEl.value.trim();
     const password   = passwordEl.value;
 
     if (!identifier || !password) {
-      errorEl.textContent =
-        'Please fill in both fields.';
+      errorEl.textContent = 'Please fill in both fields.';
       return;
     }
 
@@ -156,7 +143,6 @@ function attachEvents() {
   });
 }
 
-
 async function signIn(identifier, password) {
   const credentials = btoa(`${identifier}:${password}`);
 
@@ -166,18 +152,13 @@ async function signIn(identifier, password) {
       'Authorization': `Basic ${credentials}`,
       'Content-Type': 'application/json',
     },
-
   });
 
   if (res.status === 401 || res.status === 403)
-    throw new Error(
-      'Invalid credentials. Check your username/email and password.'
-    );
+    throw new Error('Invalid credentials. Check your username/email and password.');
 
   if (!res.ok)
-    throw new Error(
-      `Server error (${res.status}). Please try again.`
-    );
+    throw new Error(`Server error (${res.status}). Please try again.`);
 
   const data = await res.json();
   const token =
@@ -186,9 +167,7 @@ async function signIn(identifier, password) {
       : (data?.token ?? data?.jwt);
 
   if (!token)
-    throw new Error(
-      'Unexpected server response. Please try again.'
-    );
+    throw new Error('Unexpected server response. Please try again.');
 
   return token;
 }
@@ -197,12 +176,8 @@ function loadStyles(href) {
   if (document.querySelector(`link[href="${href}"]`))
     return;
 
-
   const link = document.createElement('link');
-
   link.rel = 'stylesheet';
-
   link.href = href;
-
   document.head.appendChild(link);
 }

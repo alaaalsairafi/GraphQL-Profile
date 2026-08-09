@@ -130,7 +130,6 @@
   padding-right: 44px;
 }
 
-
 /* Password visibility button */
 #toggle-pw {
   position: absolute;
@@ -165,6 +164,16 @@
 
 #toggle-pw.hidden {
   display: none;
+}
+
+/* Eye slash line — fades in when password is visible */
+.eye-slash {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+#toggle-pw.pw-visible .eye-slash {
+  opacity: 1;
 }
 
 /* Error */
