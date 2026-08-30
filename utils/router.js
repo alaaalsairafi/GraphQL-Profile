@@ -8,9 +8,8 @@ const routes = {
   profile: () => import('../profile/profile.js'),
 };
 
-function currentPage() {
-  const hash = location.hash.replace(/^#\/?/, '');
-  return routes[hash] ? hash : null;
+function currentPath() {
+  return location.hash.replace(/^#\/?/, '');
 }
 
 // Redirects unauthorized/authorized-only pages to the right place
@@ -21,18 +20,23 @@ function guard(page) {
 }
 
 export function navigate(page) {
-  const target = `/${page}`;
-  if (location.hash.replace(/^#\/?/, '') === page) {
+  if (currentPath() === page) {
     render(page); // already on that hash, hashchange won't fire — render directly
   } else {
-    location.hash = target;
+    location.hash = `/${page}`;
   }
 }
 
-async function render(page) {
-  const safePage = guard(page);
+async function render(path) {
+  if (!routes[path]) {
+    app.innerHTML = '';
+    const { render: renderPage } = await import('../pages/notfound.js');
+    renderPage(app, path);
+    return;
+  }
 
-  if (safePage !== page) {
+  const safePage = guard(path);
+  if (safePage !== path) {
     location.hash = `/${safePage}`;
     return;
   }
@@ -42,14 +46,11 @@ async function render(page) {
   renderPage(app);
 }
 
-window.addEventListener('hashchange', () => {
-  render(currentPage() ?? (Auth.isLoggedIn() ? 'profile' : 'login'));
-});
+window.addEventListener('hashchange', () => render(currentPath()));
 
 // ── Initial load ──
-const initialPage = currentPage() ?? (Auth.isLoggedIn() ? 'profile' : 'login');
 if (!location.hash) {
-  location.hash = `/${initialPage}`; // triggers hashchange → render
+  location.hash = `/${Auth.isLoggedIn() ? 'profile' : 'login'}`; // triggers hashchange → render
 } else {
-  render(initialPage);
+  render(currentPath());
 }

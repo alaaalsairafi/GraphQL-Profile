@@ -1,0 +1,103 @@
+/* ── Not Found Page ── */
+
+#app:has(.nf-container) {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.nf-bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 70%),
+    var(--bg);
+  z-index: 0;
+}
+
+.nf-bg .grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+  opacity: 0.4;
+}
+
+.nf-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+}
+
+.nf-code {
+  font-family: var(--font-display);
+  font-size: 96px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, #e9d5ff 0%, var(--accent) 55%, #6d28d9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 24px color-mix(in srgb, var(--accent) 40%, transparent));
+}
+
+.nf-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 0;
+}
+
+.nf-sub {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0 0 var(--space-4);
+}
+
+.nf-sub code {
+  font-family: var(--font-body);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.nf-btn {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 100%, white 10%) 0%, var(--accent) 60%, color-mix(in srgb, var(--accent) 100%, black 15%) 100%);
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 12px 28px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.nf-btn:hover {
+  opacity: 0.92;
+  box-shadow: 0 10px 28px -6px color-mix(in srgb, var(--accent) 65%, transparent);
+}
+
+.nf-btn:active { transform: scale(0.98); }
+
+@media (max-width: 520px) {
+  .nf-code  { font-size: 64px; }
+  .nf-title { font-size: 18px; }
+}
