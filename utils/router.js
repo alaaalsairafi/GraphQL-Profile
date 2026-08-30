@@ -3,13 +3,18 @@ import { Auth } from '../auth/auth.js';
 
 const app = document.getElementById('app');
 
+// Repo name only matters as a URL prefix when actually deployed on GitHub Pages
+const BASE = location.hostname.endsWith('github.io') ? '/GraphQL-Profile' : '';
+
 const routes = {
   login:   () => import('../auth/login.js'),
   profile: () => import('../profile/profile.js'),
 };
 
 function currentPath() {
-  return location.hash.replace(/^#\/?/, '');
+  let path = location.pathname;
+  if (BASE && path.startsWith(BASE)) path = path.slice(BASE.length);
+  return path.replace(/^\/+|\/+$/g, ''); // strip leading/trailing slashes
 }
 
 // Redirects unauthorized/authorized-only pages to the right place
@@ -21,10 +26,11 @@ function guard(page) {
 
 export function navigate(page) {
   if (currentPath() === page) {
-    render(page); // already on that hash, hashchange won't fire — render directly
-  } else {
-    location.hash = `/${page}`;
+    render(page); // already there, popstate won't fire — render directly
+    return;
   }
+  history.pushState(null, '', `${BASE}/${page}`);
+  render(page);
 }
 
 async function render(path) {
@@ -37,7 +43,8 @@ async function render(path) {
 
   const safePage = guard(path);
   if (safePage !== path) {
-    location.hash = `/${safePage}`;
+    history.replaceState(null, '', `${BASE}/${safePage}`);
+    render(safePage);
     return;
   }
 
@@ -46,11 +53,14 @@ async function render(path) {
   renderPage(app);
 }
 
-window.addEventListener('hashchange', () => render(currentPath()));
+window.addEventListener('popstate', () => render(currentPath()));
 
 // ── Initial load ──
-if (!location.hash) {
-  location.hash = `/${Auth.isLoggedIn() ? 'profile' : 'login'}`; // triggers hashchange → render
+const initial = currentPath();
+if (!initial) {
+  const startPage = Auth.isLoggedIn() ? 'profile' : 'login';
+  history.replaceState(null, '', `${BASE}/${startPage}`);
+  render(startPage);
 } else {
-  render(currentPath());
+  render(initial);
 }
