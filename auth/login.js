@@ -10,7 +10,7 @@ export function render(container) {
     </div>
     <div class="login-container">
       <div class="login-brand">
-        <h1 class="brand-name">GraphQL<span class="accent"></span></h1>
+        <h1 class="brand-name"><center>👾GRAPHQL</><span class="accent"></span></h1>
       </div>
       <div class="login-form">
         <div class="form-group">

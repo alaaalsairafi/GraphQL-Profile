@@ -13,7 +13,8 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(168,85,247,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 60% 40%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 15% 85%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 70%),
     var(--bg);
   z-index: 0;
 }
@@ -55,14 +56,20 @@
 .brand-name {
   font-family: var(--font-display);
   font-size: 38px;
-  font-weight: 600;
-  color: var(--text-1);
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1;
+  background: linear-gradient(135deg, var(--text-1) 0%, var(--text-1) 55%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .brand-name .accent {
-  color: var(--accent);
+  background: linear-gradient(135deg, #e9d5ff 0%, var(--accent) 60%, #6d28d9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .brand-sub {
@@ -74,16 +81,28 @@
 
 /* Form card */
 .login-form {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  background: var(--surface);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 100%, white 3%) 0%, var(--surface) 100%);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   padding: var(--space-7);
+  overflow: hidden;
+  box-shadow: 0 20px 60px -30px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.login-form::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(220px circle at 100% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
+  pointer-events: none;
 }
 
 .form-group {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -118,7 +137,7 @@
 
 .form-group input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 0 16px 0 color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 /* Password field */
@@ -149,7 +168,7 @@
 }
 
 #toggle-pw:hover {
-  color: var(--text-2);
+  color: var(--accent);
 }
 
 #toggle-pw:focus {
@@ -194,9 +213,10 @@
 
 /* Submit button */
 .btn-login {
+  position: relative;
   width: 100%;
   padding: 14px;
-  background: var(--accent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 100%, white 10%) 0%, var(--accent) 60%, color-mix(in srgb, var(--accent) 100%, black 15%) 100%);
   color: #fff;
   font-family: var(--font-display);
   font-size: 13px;
@@ -210,12 +230,20 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  transition: opacity 0.2s, transform 0.1s;
+  transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
-.btn-login:hover   { opacity: 0.88; }
+.btn-login:hover   {
+  opacity: 0.92;
+  box-shadow: 0 10px 28px -6px color-mix(in srgb, var(--accent) 65%, transparent);
+}
 .btn-login:active  { transform: scale(0.99); }
-.btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-login:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
 
 /* Spinner */
 .spinner {
