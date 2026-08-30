@@ -4,6 +4,7 @@ import { navigate }          from '../utils/router.js';
 import { fetchUser, fetchXP, fetchXPTotal, fetchAuditRatio } from '../graphql/queries.js';
 import { renderXPOverTime }   from '../graphs/xpOverTime.js';
 import { renderXPPerProject } from '../graphs/xpPerProject.js';
+import { renderAuditRatio }   from '../graphs/auditRatio.js';
 
 export async function render(container) {
   loadStyles('style/profile.css');
@@ -49,6 +50,10 @@ export async function render(container) {
           <h2 class="graph-title">XP per Project</h2>
           <div class="graph-container" id="graph-xp-project"></div>
         </div>
+        <div class="graph-card">
+          <h2 class="graph-title">Audit Ratio</h2>
+          <div class="graph-container" id="graph-audit-ratio"></div>
+        </div>
       </section>
 
     </main>
@@ -93,6 +98,7 @@ export async function render(container) {
     // Graphs
     renderXPOverTime(document.getElementById('graph-xp-time'), xpTx);
     renderXPPerProject(document.getElementById('graph-xp-project'), xpTx);
+    renderAuditRatio(document.getElementById('graph-audit-ratio'), audit);
 
   } catch (err) {
     console.error('Profile load error:', err);

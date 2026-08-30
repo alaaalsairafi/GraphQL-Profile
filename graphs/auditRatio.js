@@ -105,7 +105,7 @@ export function renderAuditRatio(container, auditData) {
       'text-anchor': 'middle', class: 'graph-label',
       style: 'font-size: 11px; opacity: 0.55;',
     });
-    rawLabel.textContent = formatXP(bar.raw);
+    rawLabel.textContent = fmt(bar.raw);
     svg.appendChild(rawLabel);
   });
 
@@ -116,4 +116,11 @@ export function renderAuditRatio(container, auditData) {
   }));
 
   container.appendChild(svg);
+}
+
+function fmt(bytes) {
+  if (!bytes) return '0 B';
+  if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(2)} MB`;
+  if (bytes >= 1_000)     return `${(bytes / 1_000).toFixed(1)} kB`;
+  return `${bytes} B`;
 }
