@@ -1,8 +1,6 @@
-//queries used in the profile page
-
 import { gqlQuery } from './client.js';
 
-// ── 1. Basic user info (normal query) ──
+// Basic user info (normal query) ──
 export async function fetchUser() {
   const data = await gqlQuery(`{
     user {
@@ -13,9 +11,7 @@ export async function fetchUser() {
   return data.user[0];
 }
 
-// ── 2a. Total XP — aggregate sum, not subject to row-return limits ──
-// Excludes entry-piscine exercise XP, but keeps XP from any "piscine" object type
-// (e.g. the piscine-js completion bonus) that lives nested under bh-module.
+// Total XP
 export async function fetchXPTotal() {
   const data = await gqlQuery(`{
     transaction_aggregate(
@@ -37,7 +33,7 @@ export async function fetchXPTotal() {
   return data.transaction_aggregate.aggregate.sum.amount ?? 0;
 }
 
-// ── 2b. XP per project / over time (nested query, for the graphs) ──
+// XP per project / over time (nested query, for the graphs) ──
 export async function fetchXP() {
   const data = await gqlQuery(`{
     transaction(
@@ -61,7 +57,7 @@ export async function fetchXP() {
   return data.transaction;
 }
 
-// ── 3. Audit ratio (argument query) ──
+// Audit ratio (argument query) ──
 export async function fetchAuditRatio() {
   const data = await gqlQuery(`{
     user {
@@ -73,7 +69,7 @@ export async function fetchAuditRatio() {
   return data.user[0];
 }
 
-// ── 4. Pass / Fail results (nested query) ──
+// Pass / Fail results (nested query) ──
 export async function fetchResults() {
   const data = await gqlQuery(`{
     result(

@@ -1,6 +1,3 @@
-// graphs/xpOverTime.js
-// SVG line chart — cumulative XP earned over time
-
 export function renderXPOverTime(container, transactions) {
   const NS = 'http://www.w3.org/2000/svg';
 
@@ -83,9 +80,8 @@ export function renderXPOverTime(container, transactions) {
   });
   svg.appendChild(linePath);
 
-  // X axis date labels — spaced evenly across the TIME range (not by point index),
-  // so labels don't bunch up when transactions cluster early on.
-  // Also skips any label that would land too close (in pixels) to the previous one.
+  // X axis date labels — spaced evenly across the TIME range,
+  
   const desiredLabels = Math.min(4, points.length);
   const minPixelGap = 45;
   const placedX = [];

@@ -1,4 +1,3 @@
-// graphql/client.js
 import { Auth } from '../auth/auth.js';
 
 const GQL_ENDPOINT = 'https://learn.reboot01.com/api/graphql-engine/v1/graphql';

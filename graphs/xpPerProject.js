@@ -1,5 +1,3 @@
-// graphs/xpPerProject.js
-// SVG bar chart — top 10 projects by XP earned
 
 export function renderXPPerProject(container, transactions) {
   const NS = 'http://www.w3.org/2000/svg';
