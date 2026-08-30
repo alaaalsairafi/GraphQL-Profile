@@ -12,7 +12,7 @@ export async function render(container) {
   // ── Shell ──
   container.innerHTML = `
     <nav class="nav">
-      <span class="nav-brand">GraphQL</span>
+      <span class="nav-brand">👾GRAPHQL</span>
       <button id="btn-logout" class="btn-logout">Log out</button>
     </nav>
 

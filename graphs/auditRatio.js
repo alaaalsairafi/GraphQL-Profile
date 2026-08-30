@@ -2,7 +2,9 @@
 
 export function renderAuditRatio(container, auditData) {
   const NS = 'http://www.w3.org/2000/svg';
-  const { totalUp, totalDown, auditRatio } = auditData;
+  const totalUp    = auditData?.totalUp    ?? 0;
+  const totalDown  = auditData?.totalDown  ?? 0;
+  const auditRatio = auditData?.auditRatio ?? 0;
 
   const total = (totalUp + totalDown) || 1;
   const upPct   = (totalUp / total) * 100;
@@ -50,7 +52,7 @@ export function renderAuditRatio(container, auditData) {
     x: W / 2, y: 34, 'text-anchor': 'middle', class: 'graph-label',
     style: 'font-size: 28px; font-weight: 700; fill: var(--accent);',
   });
-  ratioText.textContent = auditRatio.toFixed(2);
+  ratioText.textContent = auditRatio.toFixed(1);
   svg.appendChild(ratioText);
 
   const ratioSub = el('text', {
@@ -76,7 +78,7 @@ export function renderAuditRatio(container, auditData) {
     const y = PAD.top + innerH - barH;
 
     const rect = el('rect', {
-      x, y, width: barW, height: barH,
+      x, y, width: barW, height: Math.max(barH, 0),
       rx: '14', fill: bar.fill, filter: 'url(#auditGlow)',
     });
     svg.appendChild(rect);
